@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#2F3A4F</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="secondary">#7C6F64</color>
+    <color name="surface_bg">#F4F1EC</color>
+    <color name="card_bg">#FFFDF9</color>
+    <color name="text_main">#1F2933</color>
+    <color name="text_muted">#6B7280</color>
+    <color name="accent_soft">#EEE9E1</color>
+    <color name="primary_gradient_end">#4A5C80</color>
+    <color name="divider">#E7E1D8</color>
+    <color name="avatar_ring">#FFFDF9</color>
+    <color name="ic_launcher_background">#3DDC84</color>
+
+    <!-- About dialog colors -->
+    <color name="about_header_start">#2F3A4F</color>
+    <color name="about_header_end">#5B6F99</color>
+    <color name="about_contributor_bg">#F8F5F0</color>
+    <color name="about_contributor_avatar">#D6CFC4</color>
+    <color name="about_tech_chip_bg">#EDE8E0</color>
+    <color name="about_tech_chip_text">#4A5C80</color>
+    <color name="about_section_title">#2F3A4F</color>
+    <color name="about_card_stroke">#E5DFD6</color>
+    <color name="about_icon_tint">#7C6F64</color>
+    <color name="about_link_text">#5B6F99</color>
+    <color name="about_copyright_text">#9CA3AF</color>
+
+    <!-- Alarm Alert colors -->
+    <color name="alarm_bg_start">#1A1A2E</color>
+    <color name="alarm_bg_mid">#16213E</color>
+    <color name="alarm_bg_end">#0F3460</color>
+    <color name="alarm_accent">#E94560</color>
+    <color name="alarm_accent_glow">#80E94560</color>
+    <color name="alarm_gold">#F5C518</color>
+    <color name="alarm_surface">#22FFFFFF</color>
+    <color name="alarm_text_primary">#FFFFFF</color>
+    <color name="alarm_text_secondary">#B0C4DE</color>
+    <color name="alarm_dismiss_bg">#FFFFFF</color>
+    <color name="alarm_dismiss_text">#E94560</color>
+</resources>
