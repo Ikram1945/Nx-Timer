@@ -1,0 +1,16 @@
+{
+    "project_name": "NxTimer",
+    "tabs": [
+        {
+            "title": "MainActivity.java",
+            "path": "\/storage\/emulated\/0\/AndroidIDEProjects\/NxTimer\/app\/src\/main\/java\/com\/nx\/timer\/MainActivity.java",
+            "position": 0
+        },
+        {
+            "title": "AlarmReceiver.java",
+            "path": "\/storage\/emulated\/0\/AndroidIDEProjects\/NxTimer\/app\/src\/main\/java\/com\/nx\/timer\/AlarmReceiver.java",
+            "position": 1
+        }
+    ],
+    "last_modified": 1786282789664
+}

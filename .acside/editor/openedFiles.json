@@ -1,0 +1,20 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/NxTimer/app/build.gradle",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 772,
+          "line": 35
+        },
+        "start": {
+          "column": 0,
+          "index": 772,
+          "line": 35
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/NxTimer/app/build.gradle"
+}
