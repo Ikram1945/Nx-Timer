@@ -10,6 +10,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class TimerFragment extends Fragment {
@@ -40,6 +45,9 @@ public class TimerFragment extends Fragment {
         timerManager = new TimerManager(display);
 
         var activity = requireActivity();
+        SessionLogger logger = new SessionLogger(activity);
+        timerManager.setSessionLogger(logger);
+
         timerUiController = new TimerUiController(activity, timerManager, timerStatus, lastLap,
                 progressBar, lapListText, targetLabel);
 
@@ -56,6 +64,33 @@ public class TimerFragment extends Fragment {
 
         timerUiController.setup(btnStart, btnPause, btnReset, btnCopy, btnLap, btnCountdown,
                 btnMinus, btnPlus, display);
+
+        // Tampilkan statistik durasi
+        updateStats(view, logger);
+        updateChart(view, logger);
+    }
+
+    private void updateStats(View view, SessionLogger logger) {
+        TextView today = view.findViewById(R.id.stat_today);
+        TextView week = view.findViewById(R.id.stat_week);
+        TextView month = view.findViewById(R.id.stat_month);
+
+        today.setText(SessionLogger.formatDuration(logger.getTodayTotal()));
+        week.setText(SessionLogger.formatDuration(logger.getThisWeekTotal()));
+        month.setText(SessionLogger.formatDuration(logger.getThisMonthTotal()));
+    }
+
+    private void updateChart(View view, SessionLogger logger) {
+        DurationBarChart chart = view.findViewById(R.id.duration_chart);
+        long[] daily = logger.getDailyTotalsForCurrentWeek();
+
+        List<DurationBarChart.BarData> chartData = new java.util.ArrayList<>();
+        String[] labels = {"Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"};
+        for (int i = 0; i < 7; i++) {
+            float hours = daily[i] / 3600000f;
+            chartData.add(new DurationBarChart.BarData(labels[i], hours));
+        }
+        chart.setData(chartData);
     }
 
     public TimerManager getTimerManager() {

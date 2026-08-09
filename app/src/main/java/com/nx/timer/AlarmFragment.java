@@ -67,6 +67,58 @@ public class AlarmFragment extends Fragment {
         alarmStorage = new AlarmStorage(requireContext());
         alarms.addAll(alarmStorage.loadAlarms());
         refreshAlarmList();
+
+        // Predictive suggestion
+        showPredictiveSuggestion(view);
+    }
+
+    private void showPredictiveSuggestion(View view) {
+        LinearLayout suggestionContainer = view.findViewById(R.id.suggestion_container);
+        if (suggestionContainer == null) return;
+
+        suggestionContainer.removeAllViews();
+
+        if (alarms.isEmpty()) return;
+
+        // Hitung frekuensi jam alarm
+        java.util.Map<String, Integer> freq = new java.util.HashMap<>();
+        for (AlarmItem a : alarms) {
+            String key = String.format("%02d:%02d", a.getHour(), a.getMinute());
+            freq.put(key, freq.getOrDefault(key, 0) + 1);
+        }
+
+        // Ambil yang paling sering
+        String mostFrequent = null;
+        int max = 0;
+        for (java.util.Map.Entry<String, Integer> e : freq.entrySet()) {
+            if (e.getValue() > max) {
+                max = e.getValue();
+                mostFrequent = e.getKey();
+            }
+        }
+
+        if (mostFrequent != null && max >= 1) {
+            final String frequentTime = mostFrequent;
+            TextView suggestion = new TextView(requireContext());
+            suggestion.setText("💡 Kamu biasanya alarm jam " + frequentTime + ". Set lagi?");
+            suggestion.setTextSize(13f);
+            suggestion.setTextColor(0xFF6366F1);
+            suggestion.setPadding(16, 8, 16, 8);
+            suggestion.setOnClickListener(v -> {
+                String[] parts = frequentTime.split(":");
+                int h = Integer.parseInt(parts[0]);
+                int m = Integer.parseInt(parts[1]);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    timePicker.setHour(h);
+                    timePicker.setMinute(m);
+                } else {
+                    timePicker.setCurrentHour(h);
+                    timePicker.setCurrentMinute(m);
+                }
+                Snackbar.make(requireView(), "Waktu alarm disesuaikan ke " + frequentTime, Snackbar.LENGTH_SHORT).show();
+            });
+            suggestionContainer.addView(suggestion);
+        }
     }
 
     private void setAlarm() {

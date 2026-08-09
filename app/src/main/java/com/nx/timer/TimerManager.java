@@ -26,6 +26,7 @@ public class TimerManager {
     private final List<String> laps = new ArrayList<>();
     private OnTargetReachedListener targetReachedListener;
     private OnTickListener tickListener;
+    private SessionLogger sessionLogger;
 
     private final Runnable tick = new Runnable() {
         @Override
@@ -74,6 +75,10 @@ public class TimerManager {
         this.tickListener = listener;
     }
 
+    public void setSessionLogger(SessionLogger logger) {
+        this.sessionLogger = logger;
+    }
+
     public void start() {
         if (isRunning) return;
         isRunning = true;
@@ -93,6 +98,9 @@ public class TimerManager {
         if (!isRunning) return;
         isRunning = false;
         handler.removeCallbacks(tick);
+        if (sessionLogger != null) {
+            sessionLogger.logSession(elapsedMillis);
+        }
     }
 
     public void reset() {
