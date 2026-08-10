@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#8AB4F8</color>
+    <color name="on_primary">#202124</color>
+    <color name="secondary">#9AA0A6</color>
+    <color name="surface_bg">#121212</color>
+    <color name="card_bg">#1E1E1E</color>
+    <color name="text_main">#E8EAED</color>
+    <color name="text_muted">#9AA0A6</color>
+    <color name="accent_soft">#2C2C2C</color>
+    <color name="primary_gradient_end">#669DF6</color>
+    <color name="divider">#3C4043</color>
+    <color name="avatar_ring">#1E1E1E</color>
+    <color name="ic_launcher_background">#3DDC84</color>
+
+    <!-- About dialog colors -->
+    <color name="about_header_start">#1E1E1E</color>
+    <color name="about_header_end">#2C2C2C</color>
+    <color name="about_contributor_bg">#1A1A1A</color>
+    <color name="about_contributor_avatar">#3C4043</color>
+    <color name="about_tech_chip_bg">#2C2C2C</color>
+    <color name="about_tech_chip_text">#8AB4F8</color>
+    <color name="about_section_title">#8AB4F8</color>
+    <color name="about_card_stroke">#3C4043</color>
+    <color name="about_icon_tint">#9AA0A6</color>
+    <color name="about_link_text">#8AB4F8</color>
+    <color name="about_copyright_text">#9AA0A6</color>
+
+    <!-- Alarm Alert colors -->
+    <color name="about_card_stroke_unused">#E5DFD6</color>
+</resources>

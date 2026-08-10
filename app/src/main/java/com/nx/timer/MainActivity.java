@@ -65,12 +65,30 @@ public class MainActivity extends AppCompatActivity {
 
         var toolbar = (com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.action_about_me) {
+            if (item.getItemId() == R.id.action_dark_mode) {
+                toggleDarkMode();
+                return true;
+            } else if (item.getItemId() == R.id.action_about_me) {
                 showAboutDialog();
                 return true;
             }
             return false;
         });
+    }
+
+    private void toggleDarkMode() {
+        android.content.SharedPreferences prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE);
+        boolean isDarkMode = prefs.getBoolean("dark_mode", false);
+        boolean newMode = !isDarkMode;
+
+        prefs.edit().putBoolean("dark_mode", newMode).apply();
+
+        if (newMode) {
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        recreate();
     }
 
     private void showAboutDialog() {

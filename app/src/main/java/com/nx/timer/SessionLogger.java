@@ -21,11 +21,56 @@ public class SessionLogger {
         this.prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
-    /** Catat satu sesi stopwatch (dipanggil saat pause/reset setelah running). */
-    public void logSession(long durationMillis) {
+    /**
+     * Mode timer:
+     * <ul>
+     *   <li>{@link #MODE_STOPWATCH} — stopwatch manual, dicatat ke statistik</li>
+     *   <li>{@link #MODE_COUNTDOWN} — countdown murni, TIDAK dicatat</li>
+     *   <li>{@link #MODE_POMODORO} — template Pomodoro otomatis, TIDAK dicatat</li>
+     * </ul>
+     */
+    public static final int MODE_STOPWATCH = 0;
+    public static final int MODE_COUNTDOWN = 1;
+    public static final int MODE_POMODORO  = 2;
+
+    private int mode = MODE_STOPWATCH;
+
+    // Batasi maksimum history item agar hemat storage/limit (misal maks 50 item terbaru)
+    private static final int MAX_HISTORY_ITEMS = 50;
+
+    /** Catat satu sesi stopwatch (dipanggil saat pause/reset setelah running).
+     *  Sesi otomatis (countdown / pomodoro) tidak ikut dicatat agar statistik benar-benar bersih. */
+    public void logSession(long durationMillis, int mode) {
+        if (mode != MODE_STOPWATCH) return; // whitelist: hanya stopwatch manual
         if (durationMillis <= 0) return;
+        
+        java.util.Map<String, ?> allEntries = prefs.getAll();
+        java.util.List<String> keys = new java.util.ArrayList<>();
+        for (String k : allEntries.keySet()) {
+            if (k.startsWith(KEY_PREFIX)) {
+                keys.add(k);
+            }
+        }
+        
+        // Urutkan key (timestamp) secara ascending
+        java.util.Collections.sort(keys);
+
+        SharedPreferences.Editor editor = prefs.edit();
+        
+        // Jika sudah melebihi limit, hapus yang paling lama (head of list)
+        while (keys.size() >= MAX_HISTORY_ITEMS) {
+            String oldestKey = keys.remove(0);
+            editor.remove(oldestKey);
+        }
+
         String key = KEY_PREFIX + System.currentTimeMillis();
-        prefs.edit().putLong(key, durationMillis).apply();
+        editor.putLong(key, durationMillis);
+        editor.apply();
+    }
+
+    /** Backward-compatible overload: anggap sebagai stopwatch manual. */
+    public void logSession(long durationMillis) {
+        logSession(durationMillis, MODE_STOPWATCH);
     }
 
     public long getTodayTotal() {

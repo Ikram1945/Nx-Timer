@@ -28,6 +28,13 @@ public class TimerManager {
     private OnTickListener tickListener;
     private SessionLogger sessionLogger;
 
+    // --- Built-in template (Pomodoro 25:5) ---
+    private boolean pomodoroMode = false;
+    private boolean isWorkPhase = true; // true = fase kerja, false = fase istirahat
+    private long workMillis = 25 * 60_000L;
+    private long breakMillis = 5 * 60_000L;
+    private int cycleCount = 0;
+
     private final Runnable tick = new Runnable() {
         @Override
         public void run() {
@@ -39,6 +46,12 @@ public class TimerManager {
                     display.setText(formatTime(0));
                     isRunning = false;
                     targetReached = true;
+                    cycleCount++;
+                    // Built-in template: toggle otomatis fase kerja <-> istirahat
+                    if (pomodoroMode) {
+                        isWorkPhase = !isWorkPhase;
+                        targetMillis = isWorkPhase ? workMillis : breakMillis;
+                    }
                     if (targetReachedListener != null) {
                         targetReachedListener.onTargetReached();
                     }
@@ -99,14 +112,28 @@ public class TimerManager {
         isRunning = false;
         handler.removeCallbacks(tick);
         if (sessionLogger != null) {
-            sessionLogger.logSession(elapsedMillis);
+            // Hanya stopwatch manual yang ikut statistik; countdown & pomodoro di-skip.
+            sessionLogger.logSession(elapsedMillis, getSessionMode());
         }
+    }
+
+    /** Mode yang dipakai saat pencatatan sesi (whitelist: hanya stopwatch manual yang dicatat).
+     *  Konstanta mengikuti {@link SessionLogger}: 0 = stopwatch, 1 = countdown, 2 = pomodoro. */
+    public int getSessionMode() {
+        if (pomodoroMode) return 2; // SessionLogger.MODE_POMODORO
+        if (countdownMode) return 1; // SessionLogger.MODE_COUNTDOWN
+        return 0;                    // SessionLogger.MODE_STOPWATCH
     }
 
     public void reset() {
         if (isRunning) {
             isRunning = false;
             handler.removeCallbacks(tick);
+        }
+        // Built-in template: reset ke fase kerja
+        if (pomodoroMode) {
+            isWorkPhase = true;
+            targetMillis = workMillis;
         }
         elapsedMillis = countdownMode ? targetMillis : 0;
         targetReached = false;
@@ -147,12 +174,12 @@ public class TimerManager {
             elapsedMillis = 0;
         }
         targetReached = false;
+        laps.clear(); // FIX: bersihkan lap setiap ganti mode
         display.setText(formatTime(elapsedMillis));
         if (tickListener != null) {
             tickListener.onTick(elapsedMillis, countdownMode ? targetMillis : 0);
         }
     }
-
     public void setTargetTime(long millis) {
         if (isRunning) return;
         this.targetMillis = Math.max(1000L, millis); // minimal 1 detik
@@ -184,6 +211,71 @@ public class TimerManager {
 
     public boolean isTargetReached() {
         return targetReached;
+    }
+
+    /**
+     * Aktifkan/non-aktifkan built-in template Pomodoro (25 menit kerja + 5 menit istirahat).
+     * Saat diaktifkan, timer otomatis beralih antara fase kerja dan istirahat.
+     */
+    public void setPomodoroMode(boolean enabled) {
+        if (isRunning) return;
+        this.pomodoroMode = enabled;
+        if (enabled) {
+            countdownMode = true;
+            isWorkPhase = true;
+            targetMillis = workMillis;
+            elapsedMillis = targetMillis;
+            targetReached = false;
+            laps.clear(); // FIX: bersihkan lap lama agar tidak ikut terhitung di mode Pomodoro
+            display.setText(formatTime(elapsedMillis));
+            if (tickListener != null) {
+                tickListener.onTick(elapsedMillis, targetMillis);
+            }
+        } else {
+            // Reset ke mode countdown default
+            setCountdownMode(true);
+        }
+    }
+
+    public boolean isPomodoroMode() {
+        return pomodoroMode;
+    }
+
+    public boolean isWorkPhase() {
+        return isWorkPhase;
+    }
+
+    public void setTemplate(com.nx.timer.TimerTemplate template) {
+        this.workMillis = template.getWorkMillis();
+        this.breakMillis = template.getBreakMillis();
+        if (pomodoroMode) {
+            targetMillis = isWorkPhase ? workMillis : breakMillis;
+            if (!isRunning) {
+                elapsedMillis = targetMillis;
+                display.setText(formatTime(elapsedMillis));
+            }
+        }
+    }
+
+    public long getWorkMillis() { return workMillis; }
+    public long getBreakMillis() { return breakMillis; }
+
+    public int getCycleCount() {
+        return cycleCount;
+    }
+
+    public void incrementCycle() {
+        cycleCount++;
+    }
+
+    public void decrementCycle() {
+        if (cycleCount > 0) {
+            cycleCount--;
+        }
+    }
+
+    public void resetCycle() {
+        cycleCount = 0;
     }
 
     /** Format as HH:MM:SS.cc */

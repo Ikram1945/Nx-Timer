@@ -2,31 +2,25 @@
 
 Aplikasi Android serbaguna yang menggabungkan **stopwatch/hitung mundur** dan **alarm berulang** dalam satu antarmuka sederhana. Dibangun dengan Java 17 dan Material Design 3.
 
----
+## ✨ Fitur
 
-## ✨ Fitur Utama
-
-### ⏱️ Timer / Stopwatch & Tracking
+### ⏱️ Timer / Stopwatch
 - **Stopwatch** — hitung waktu naik dengan presisi sentidetik (00:00:00.00)
 - **Hitung mundur (Countdown)** — atur target waktu, hitung mundur, dan dapatkan notifikasi saat selesai
-- **Tracking Durasi Sesi** — otomatis mencatat dan menghitung total durasi stopwatch per hari, minggu, dan bulan
-- **Bar Chart Interaktif** — visualisasi grafik batang (bar chart) modern dengan gradient warna indigo untuk data durasi harian
 - **Lap** — catat waktu lap/split selama stopwatch berjalan
-- **Salin & Bagikan** — salin waktu ke clipboard atau bagikan via intent Android
+- **Salin waktu** — salin waktu saat ini ke clipboard
+- **Bagikan** — bagikan waktu via intent Android
 - **Mode fokus** — tombol toggle untuk mode fokus
 - **Atur target** — tambah/kurangi target countdown per 10 detik
 - **Progress bar** — visualisasi progres countdown
 
-### ⏰ Alarm & Prediksi Pintar
+### ⏰ Alarm
 - **Set alarm berulang** — pilih hari (Senin–Minggu) dengan chip
-- **Saran Alarm Prediktif** — menampilkan saran alarm otomatis berdasarkan pola penggunaan sebelumnya
 - **Label kustom** — beri nama setiap alarm
 - **Notifikasi & layar penuh** — alarm berbunyi dengan suara, getar, dan tampilan layar penuh
 - **Reschedule otomatis** — alarm dijadwalkan ulang setiap minggu
 - **Boot receiver** — semua alarm di-reschedule otomatis setelah restart perangkat
 - **Penyimpanan persisten** — data alarm disimpan di SharedPreferences (JSON)
-
----
 
 ## 🛠️ Teknologi
 
@@ -41,21 +35,17 @@ Aplikasi Android serbaguna yang menggabungkan **stopwatch/hitung mundur** dan **
 | Getar | `Vibrator` / `VibratorManager` |
 | Suara | `RingtoneManager` + `MediaPlayer` |
 | Penyimpanan | `SharedPreferences` (JSON) |
-| Grafik & Animasi | Custom `DurationBarChart`, Custom `ClickAnimator` (bounce + ripple) |
-
----
+| Animasi | Custom `ClickAnimator` (bounce + ripple) |
 
 ## 📁 Struktur Proyek
 
 ```
 app/src/main/java/com/nx/timer/
 ├── MainActivity.java          # Activity utama, navigasi bottom nav
-├── TimerFragment.java         # Fragment stopwatch, countdown, statistik durasi & chart
-├── TimerManager.java          # Logika stopwatch/countdown & integrasi SessionLogger
+├── TimerFragment.java         # Fragment stopwatch & countdown
+├── TimerManager.java          # Logika stopwatch/countdown (Handler-based)
 ├── TimerUiController.java     # Kontrol UI timer (tombol, progress, status)
-├── SessionLogger.java         # Pencatatan & perhitungan durasi (harian, mingguan, bulanan)
-├── DurationBarChart.java      # Custom View bar chart dengan gradient indigo modern
-├── AlarmFragment.java         # Fragment alarm & saran prediktif
+├── AlarmFragment.java         # Fragment alarm
 ├── AlarmItem.java             # Model data alarm
 ├── AlarmStorage.java          # Simpan/muat alarm (SharedPreferences JSON)
 ├── AlarmReceiver.java         # BroadcastReceiver untuk trigger alarm
@@ -67,15 +57,11 @@ app/src/main/java/com/nx/timer/
 └── BounceLayoutListener.java  # (helper ClickAnimator)
 ```
 
----
-
 ## 🚀 Cara Menjalankan
 
 1. Buka project di **CodeAssist**
 2. Pilih modul `app`
 3. Jalankan task **Run app** atau compile & install langsung ke perangkat Android
-
----
 
 ## 📱 Persyaratan
 
@@ -87,8 +73,6 @@ app/src/main/java/com/nx/timer/
   - `USE_FULL_SCREEN_INTENT` — tampilan alarm layar penuh
   - `WAKE_LOCK` — bangunkan layar saat alarm
   - `RECEIVE_BOOT_COMPLETED` — reschedule alarm setelah reboot
-
----
 
 ## 🎨 Tema
 

@@ -99,15 +99,16 @@ public class AlarmFragment extends Fragment {
 
         if (mostFrequent != null && max >= 1) {
             final String frequentTime = mostFrequent;
+            String[] parts = frequentTime.split(":");
+            final int h = parts.length > 0 ? Integer.parseInt(parts[0]) : 0;
+            final int m = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+
             TextView suggestion = new TextView(requireContext());
             suggestion.setText("💡 Kamu biasanya alarm jam " + frequentTime + ". Set lagi?");
             suggestion.setTextSize(13f);
             suggestion.setTextColor(0xFF6366F1);
             suggestion.setPadding(16, 8, 16, 8);
             suggestion.setOnClickListener(v -> {
-                String[] parts = frequentTime.split(":");
-                int h = Integer.parseInt(parts[0]);
-                int m = Integer.parseInt(parts[1]);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     timePicker.setHour(h);
                     timePicker.setMinute(m);

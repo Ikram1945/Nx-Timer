@@ -25,8 +25,11 @@
     <string name="lap_saved">Lap disimpan: %1$s</string>
     <string name="timer_lap">Lap</string>
     <string name="no_laps">Belum ada lap</string>
-    <string name="mode_countdown">Mode: Countdown</string>
-    <string name="mode_stopwatch">Mode: Stopwatch</string>
+    <string name="mode_countdown">Countdown</string>
+    <string name="mode_stopwatch">Stopwatch</string>
+    <string name="btn_pomodoro_template">Built-in Template: 25m Work + 5m Break</string>
+    <string name="pomodoro_work_phase">Fase: Kerja (25m)</string>
+    <string name="pomodoro_break_phase">Fase: Istirahat (5m)</string>
     <string name="countdown_ready">Countdown siap</string>
     <string name="countdown_running">Countdown berjalan</string>
     <string name="countdown_finished">⏰ Waktu habis!</string>
@@ -54,7 +57,7 @@
     <string name="section_tech">🛠️ Tech Stack</string>
     <string name="tech_android">Android SDK</string>
     <string name="tech_kotlin">Kotlin</string>
-    <string name="tech_java">Java</string>alar
+    <string name="tech_java">Java</string>
     <string name="tech_material">Material You</string>
 
     <!-- Social / Links -->
@@ -81,6 +84,11 @@
     <string name="alarm_validation">Isi label dan pilih minimal satu hari ulang.</string>
     <string name="alarm_dismiss">Matikan</string>
     <string name="alarm_ringing">⏰ Alarm!</string>
+
+    <!-- Cycle Counter -->
+    <string name="cycle_counter_title">Siklus &amp; Putaran</string>
+    <string name="cycle_count_label">Siklus Selesai: %1$d</string>
+    <string name="cycle_reset">Reset Siklus</string>
 
     <!-- Crash Dialog -->
     <string name="crash_title">Ups! Aplikasi Mengalami Error</string>

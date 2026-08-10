@@ -22,6 +22,8 @@ final class TimerUiController {
     private final ProgressBar progressBar;
     private final TextView lapListText;
     private final TextView targetLabel;
+    private TextView cycleCountDisplay;
+    private View cycleCounterCard;
 
     TimerUiController(android.app.Activity activity, TimerManager timerManager, TextView timerStatus,
                       TextView lastLap, ProgressBar progressBar, TextView lapListText,
@@ -33,6 +35,33 @@ final class TimerUiController {
         this.progressBar = progressBar;
         this.lapListText = lapListText;
         this.targetLabel = targetLabel;
+    }
+
+    void setupCycle(View cycleCounterCard, TextView cycleCountDisplay, Button btnCycleReset) {
+        this.cycleCounterCard = cycleCounterCard;
+        this.cycleCountDisplay = cycleCountDisplay;
+        btnCycleReset.setOnClickListener(v -> {
+            timerManager.resetCycle();
+            updateCycleCount();
+        });
+        updateCycleCount();
+        updateCycleCardVisibility();
+    }
+
+    void updateCycleCount() {
+        if (cycleCountDisplay != null) {
+            cycleCountDisplay.setText("Siklus Selesai: " + timerManager.getCycleCount());
+        }
+    }
+
+    void updateCycleCardVisibility() {
+        if (cycleCounterCard != null) {
+            if (timerManager.isCountdownMode() || timerManager.isPomodoroMode()) {
+                cycleCounterCard.setVisibility(View.VISIBLE);
+            } else {
+                cycleCounterCard.setVisibility(View.GONE);
+            }
+        }
     }
 
     void setup(Button btnStart, Button btnPause, Button btnReset, Button btnCopy,
@@ -53,6 +82,7 @@ final class TimerUiController {
             updateLapList();
             updateProgress();
             updateTargetLabel();
+            updateCycleCount();
         });
         btnCopy.setOnClickListener(v -> copyTimerValue(display.getText().toString()));
         btnLap.setOnClickListener(v -> {
@@ -92,6 +122,18 @@ final class TimerUiController {
     }
 
     void updateTimerStatus() {
+        if (timerManager.isPomodoroMode()) {
+            if (timerManager.isTargetReached()) {
+                timerStatus.setText(R.string.countdown_finished);
+            } else if (timerManager.isRunning()) {
+                timerStatus.setText(timerManager.isWorkPhase()
+                        ? R.string.pomodoro_work_phase : R.string.pomodoro_break_phase);
+            } else {
+                timerStatus.setText(timerManager.isWorkPhase()
+                        ? R.string.pomodoro_work_phase : R.string.pomodoro_break_phase);
+            }
+            return;
+        }
         if (timerManager.isTargetReached()) {
             timerStatus.setText(R.string.countdown_finished);
         } else if (timerManager.isRunning()) {
@@ -139,8 +181,12 @@ final class TimerUiController {
     }
 
     void updateProgress() {
-        if (timerManager.isCountdownMode() && timerManager.getTargetMillis() > 0) {
-            long total = timerManager.getTargetMillis();
+        long total = timerManager.getTargetMillis();
+        if (timerManager.isPomodoroMode()) {
+            total = timerManager.isWorkPhase() ? timerManager.getWorkMillis()
+                    : timerManager.getBreakMillis();
+        }
+        if (timerManager.isCountdownMode() && total > 0) {
             long elapsed = timerManager.getElapsedMillis();
             int progress = (int) ((total - elapsed) * 100 / total);
             progressBar.setProgress(Math.max(0, Math.min(100, progress)));
@@ -151,6 +197,18 @@ final class TimerUiController {
     }
 
     void updateTargetLabel() {
+        updateCycleCardVisibility();
+        if (timerManager.isPomodoroMode()) {
+            long t = timerManager.isWorkPhase() ? timerManager.getWorkMillis()
+                    : timerManager.getBreakMillis();
+            long seconds = t / 1000;
+            long mins = seconds / 60;
+            long secs = seconds % 60;
+            targetLabel.setText(String.format("Target: %d:%02d", mins, secs));
+            targetLabel.setVisibility(View.VISIBLE);
+            ((View) targetLabel.getParent()).setVisibility(View.VISIBLE);
+            return;
+        }
         if (timerManager.isCountdownMode()) {
             long t = timerManager.getTargetMillis();
             long seconds = t / 1000;
@@ -165,7 +223,7 @@ final class TimerUiController {
         }
     }
 
-    private void updateCountdownButton(Button btnCountdown) {
+    void updateCountdownButton(Button btnCountdown) {
         if (timerManager.isCountdownMode()) {
             btnCountdown.setText(R.string.mode_countdown);
         } else {
@@ -186,10 +244,28 @@ final class TimerUiController {
                 }
             }
         }
-        Snackbar.make(activity.findViewById(android.R.id.content),
-                R.string.countdown_finished, Snackbar.LENGTH_LONG).show();
+        // Built-in template: pemberitahuan fase otomatis
+        if (timerManager.isPomodoroMode()) {
+            int msg = timerManager.isWorkPhase()
+                    ? R.string.pomodoro_work_phase : R.string.pomodoro_break_phase;
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    msg, Snackbar.LENGTH_LONG).show();
+        } else {
+            Snackbar.make(activity.findViewById(android.R.id.content),
+                    R.string.countdown_finished, Snackbar.LENGTH_LONG).show();
+        }
         updateTimerStatus();
         updateProgress();
+        updateTargetLabel();
+        updateCycleCount();
+
+        // Built-in template: otomatis lanjut ke fase berikutnya
+        if (timerManager.isPomodoroMode()) {
+            timerManager.start();
+            updateTimerStatus();
+            updateProgress();
+            updateTargetLabel();
+        }
     }
 
     private void copyTimerValue(String value) {

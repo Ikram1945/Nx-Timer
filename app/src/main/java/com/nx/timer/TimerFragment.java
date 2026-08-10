@@ -59,11 +59,26 @@ public class TimerFragment extends Fragment {
         var btnCountdown = (Button) view.findViewById(R.id.btn_countdown);
         var btnMinus = (Button) view.findViewById(R.id.btn_minus);
         var btnPlus = (Button) view.findViewById(R.id.btn_plus);
-        var btnFocusMode = (Button) view.findViewById(R.id.btn_focus_mode);
-        var btnShare = (Button) view.findViewById(R.id.btn_share);
+        var btnPomodoro = (Button) view.findViewById(R.id.btn_pomodoro);
 
         timerUiController.setup(btnStart, btnPause, btnReset, btnCopy, btnLap, btnCountdown,
                 btnMinus, btnPlus, display);
+
+        var cycleCounterCard = view.findViewById(R.id.cycle_counter_card);
+        var cycleCountDisplay = (TextView) view.findViewById(R.id.cycle_count_display);
+        var btnCycleReset = (Button) view.findViewById(R.id.btn_cycle_reset);
+
+        timerUiController.setupCycle(cycleCounterCard, cycleCountDisplay, btnCycleReset);
+
+        // Built-in template: 25 menit kerja + 5 menit istirahat
+        btnPomodoro.setOnClickListener(v -> {
+            timerManager.setTemplate(com.nx.timer.TimerTemplate.Companion.getPOMODORO_25_5());
+            timerManager.setPomodoroMode(true);
+            timerUiController.updateCountdownButton(btnCountdown);
+            timerUiController.updateTargetLabel();
+            timerUiController.updateProgress();
+            timerUiController.updateTimerStatus();
+        });
 
         // Tampilkan statistik durasi
         updateStats(view, logger);
