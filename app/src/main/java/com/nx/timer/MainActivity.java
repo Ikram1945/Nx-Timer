@@ -12,8 +12,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,17 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             return false;
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(v -> {
-            // Check which fragment is visible and add lap if timer
-            if (timerFragment.isVisible() && timerFragment.getTimerManager() != null) {
-                timerFragment.getTimerManager().markLap();
-                Snackbar.make(v, R.string.lap_saved, Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(v, R.string.fab_clicked, Snackbar.LENGTH_SHORT).show();
-            }
         });
 
         var toolbar = (com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar);

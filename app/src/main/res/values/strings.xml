@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">NX Timer</string>
     <string name="hello_world">Hello, Material You!</string>
-    <string name="fab_description">Add</string>
-    <string name="fab_clicked">FAB clicked</string>
     <string name="btn_test_text">tekan ini</string>
     <string name="btn_test_title">Test Button</string>
     <string name="btn_test_clicked">Anda mengkliknya!</string>
