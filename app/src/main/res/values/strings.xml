@@ -18,6 +18,7 @@
     <string name="timer_last_lap_label">Lap terakhir</string>
     <string name="btn_focus_mode">Focus Mode</string>
     <string name="btn_share">Share</string>
+    <string name="fab_clicked">FAB diklik</string>
     <string name="focus_mode_on">Focus Mode aktif</string>
     <string name="focus_mode_off">Focus Mode nonaktif</string>
     <string name="share_subject">Waktu Timer</string>
@@ -84,6 +85,10 @@
     <string name="alarm_validation">Isi label dan pilih minimal satu hari ulang.</string>
     <string name="alarm_dismiss">Matikan</string>
     <string name="alarm_ringing">⏰ Alarm!</string>
+
+    <!-- History -->
+    <string name="history_title">Riwayat Sesi</string>
+    <string name="history_empty">Belum ada sesi tercatat.</string>
 
     <!-- Cycle Counter -->
     <string name="cycle_counter_title">Siklus &amp; Putaran</string>

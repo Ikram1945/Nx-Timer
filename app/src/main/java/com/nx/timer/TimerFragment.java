@@ -83,6 +83,28 @@ public class TimerFragment extends Fragment {
         // Tampilkan statistik durasi
         updateStats(view, logger);
         updateChart(view, logger);
+        updateHistory(view, logger);
+    }
+
+    private void updateHistory(View view, SessionLogger logger) {
+        TextView historyList = view.findViewById(R.id.history_list);
+        java.util.List<long[]> history = logger.getHistory();
+
+        if (history.isEmpty()) {
+            historyList.setText(R.string.history_empty);
+            return;
+        }
+
+        java.text.SimpleDateFormat dateFmt =
+                new java.text.SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.getDefault());
+        StringBuilder sb = new StringBuilder();
+        for (long[] entry : history) {
+            String date = dateFmt.format(new java.util.Date(entry[0]));
+            String duration = SessionLogger.formatDuration(entry[1]);
+            sb.append("• ").append(date).append("  —  ").append(duration);
+            sb.append("\n");
+        }
+        historyList.setText(sb.toString().trim());
     }
 
     private void updateStats(View view, SessionLogger logger) {

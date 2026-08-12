@@ -3,6 +3,7 @@ package com.nx.timer;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -70,10 +71,12 @@ final class TimerUiController {
         btnStart.setOnClickListener(v -> {
             timerManager.start();
             updateTimerStatus();
+            showRunningNotification();
         });
         btnPause.setOnClickListener(v -> {
             timerManager.pause();
             updateTimerStatus();
+            stopRunningNotification();
         });
         btnReset.setOnClickListener(v -> {
             timerManager.reset();
@@ -83,6 +86,7 @@ final class TimerUiController {
             updateProgress();
             updateTargetLabel();
             updateCycleCount();
+            stopRunningNotification();
         });
         btnCopy.setOnClickListener(v -> copyTimerValue(display.getText().toString()));
         btnLap.setOnClickListener(v -> {
@@ -110,7 +114,10 @@ final class TimerUiController {
             updateProgress();
         });
 
-        timerManager.setOnTickListener((elapsed, total) -> updateProgress());
+        timerManager.setOnTickListener((elapsed, total) -> {
+            updateProgress();
+            updateRunningNotification();
+        });
         timerManager.setOnTargetReachedListener(this::onTargetReached);
 
         updateTimerStatus();
@@ -265,6 +272,9 @@ final class TimerUiController {
             updateTimerStatus();
             updateProgress();
             updateTargetLabel();
+            updateRunningNotification();
+        } else {
+            stopRunningNotification();
         }
     }
 
@@ -275,5 +285,39 @@ final class TimerUiController {
             Snackbar.make(activity.findViewById(android.R.id.content),
                     R.string.timer_copied, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private void showRunningNotification() {
+        Intent intent = new Intent(activity, TimerForegroundService.class);
+        intent.setAction(TimerForegroundService.ACTION_UPDATE);
+        intent.putExtra(TimerForegroundService.EXTRA_MODE, notificationTitle());
+        intent.putExtra(TimerForegroundService.EXTRA_TEXT, timerManager.getCurrentTime());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            activity.startForegroundService(intent);
+        } else {
+            activity.startService(intent);
+        }
+    }
+
+    private void updateRunningNotification() {
+        if (!timerManager.isRunning()) return;
+        Intent intent = new Intent(activity, TimerForegroundService.class);
+        intent.setAction(TimerForegroundService.ACTION_UPDATE);
+        intent.putExtra(TimerForegroundService.EXTRA_MODE, notificationTitle());
+        intent.putExtra(TimerForegroundService.EXTRA_TEXT, timerManager.getCurrentTime());
+        activity.startService(intent);
+    }
+
+    private void stopRunningNotification() {
+        Intent intent = new Intent(activity, TimerForegroundService.class);
+        intent.setAction(TimerForegroundService.ACTION_STOP);
+        activity.stopService(intent);
+    }
+
+    private String notificationTitle() {
+        if (timerManager.isPomodoroMode()) {
+            return timerManager.isWorkPhase() ? "Pomodoro — Kerja" : "Pomodoro — Istirahat";
+        }
+        return timerManager.isCountdownMode() ? "Countdown" : "Stopwatch";
     }
 }

@@ -89,6 +89,28 @@ public class SessionLogger {
     }
 
     /**
+     * Mengembalikan riwayat sesi (timestamp + durasi) dari yang terbaru ke terlama.
+     * Setiap item berupa array dengan 2 elemen: [0] timestamp (ms), [1] durasi (ms).
+     */
+    public java.util.List<long[]> getHistory() {
+        java.util.List<String> keys = new java.util.ArrayList<>();
+        for (String k : prefs.getAll().keySet()) {
+            if (k.startsWith(KEY_PREFIX)) {
+                keys.add(k);
+            }
+        }
+        java.util.Collections.sort(keys, java.util.Collections.reverseOrder());
+
+        java.util.List<long[]> history = new java.util.ArrayList<>();
+        for (String key : keys) {
+            long ts = Long.parseLong(key.substring(KEY_PREFIX.length()));
+            long duration = prefs.getLong(key, 0);
+            history.add(new long[]{ts, duration});
+        }
+        return history;
+    }
+
+    /**
      * Mengembalikan total durasi per hari untuk minggu ini (Senin sampai Minggu).
      * Index 0 = Senin, Index 6 = Minggu.
      */
